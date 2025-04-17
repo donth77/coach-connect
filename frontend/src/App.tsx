@@ -7,7 +7,7 @@ import { useUser } from "./UserContext";
 import CoachingCalendar from "./components/CoachingCalendar";
 import UpcomingSessions from "./components/UpcomingSessions";
 import PastSessions from "./components/PastSessions";
-import AvailableCoaches from "./AvailableCoaches";
+import AvailableCoaches from "./components/AvailableCoaches";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);

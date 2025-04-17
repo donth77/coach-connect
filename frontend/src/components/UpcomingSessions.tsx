@@ -6,6 +6,10 @@ import { useUser } from "../UserContext";
 import { Role, Slot } from "../types";
 import { formatDateRange } from "../utils";
 
+/**
+ * List of upcoming bookings for the current user
+ *
+ */
 function UpcomingSessions({ refresh }: { refresh: boolean }) {
   const [upcomingSessions, setUpcoming] = useState<Slot[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -32,7 +36,7 @@ function UpcomingSessions({ refresh }: { refresh: boolean }) {
 
       const data: Slot[] = await response.json();
 
-      setUpcoming(data);
+      setUpcoming(data.reverse()); // Reverse to show the most recent first
     } catch (error) {
       console.error("Error fetching slots:", error);
     } finally {

@@ -3,6 +3,10 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { useUser } from "../UserContext";
 
+/**
+ * Displays notes and allows coaches to update the notes for each past booking
+ *
+ */
 function SessionNotes({
   slotBookingId,
   slotBookingNotes,

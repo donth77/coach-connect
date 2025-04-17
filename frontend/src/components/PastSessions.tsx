@@ -8,6 +8,10 @@ import { formatDateShort, earlyDateTimeIso } from "../utils";
 import SessionRating from "./SessionRating";
 import SessionNotes from "./SessionNotes";
 
+/**
+ * List of past bookings for the current user
+ *
+ */
 function PastSessions() {
   const [pastSessions, setPast] = useState<Slot[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);

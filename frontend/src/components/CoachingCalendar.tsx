@@ -18,6 +18,10 @@ import { Slot } from "../types";
 import { WeekView } from "./weekview";
 import { WeekviewEvent } from "./weekview/Weekview";
 
+/**
+ * Weekly view of available and booked slots for the current coach user
+ *
+ */
 function CoachingCalendar() {
   const [events, setEvents] = useState<WeekviewEvent[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -81,8 +85,6 @@ function CoachingCalendar() {
       return;
     }
 
-    const tempId = String(Date.now());
-
     try {
       const token = selectedUser.token;
 
@@ -131,11 +133,7 @@ function CoachingCalendar() {
       }
     } catch (error) {
       console.error("Error creating slot:", error);
-      // Rollback the optimistic update if error
-      setEvents((prevEvents) =>
-        prevEvents.filter((event) => event.id !== tempId)
-      );
-      toast.error("Faileed to create slot");
+      toast.error("Failed to create slot");
       setShowSelectDialog(false);
       setShowConfirmDialog(false);
     }

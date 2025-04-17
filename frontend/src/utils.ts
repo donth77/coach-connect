@@ -2,7 +2,7 @@ import * as loc from "date-fns/locale";
 import { parseISO, isBefore } from "date-fns";
 
 export const getDateFnsLocaleByActiveLanguage = (lang: string) => {
-  const shortLang = lang.split("-")[0]; // normalize 'fr-FR' to 'fr'
+  const shortLang = lang.split("-")[0];
 
   if (shortLang === "en") return loc["enUS"];
 
@@ -13,8 +13,9 @@ export const getDateFnsLocaleByActiveLanguage = (lang: string) => {
 
 export const browserLocale = getDateFnsLocaleByActiveLanguage(
   navigator.language
-);
+); // browser locale converted to date-fns locale
 
+// Locale aware formatting of date range
 export function formatDateRange(
   startISO: string,
   endISO: string,
@@ -80,6 +81,7 @@ export function formatDateRange(
   )}, ${endTime}`;
 }
 
+// Locale aware short date formatting
 export function formatDateShort(
   isoString: string,
   locale = navigator.language
@@ -92,10 +94,12 @@ export function formatDateShort(
   }).format(date);
 }
 
+// Checks if the first date in ISO format is before the second date
 export function isFirstDateIsoBeforeSecond(isoA: string, isoB: string) {
   return isBefore(parseISO(isoA), parseISO(isoB));
 }
 
+// Checks if the locale should use 12-hour time format
 export function is12HourLocale(locale = navigator.language) {
   const formatted = new Intl.DateTimeFormat(locale, {
     hour: "numeric",
@@ -104,6 +108,7 @@ export function is12HourLocale(locale = navigator.language) {
   return /AM|PM/i.test(formatted);
 }
 
+// Checks if the locale starts the week on Monday
 export function doesWeekStartOnMonday(locale = navigator.language) {
   try {
     const loc = new Intl.Locale(locale);

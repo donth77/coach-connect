@@ -3,6 +3,10 @@ import { Rating } from "primereact/rating";
 import { useUser } from "../UserContext";
 import { Role } from "../types";
 
+/**
+ * Displays rating for coaches and allows students to update the rating for each past booking
+ *
+ */
 function SessionRating({
   slotBookingId,
   slotBookingNotes,

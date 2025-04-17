@@ -7,10 +7,15 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog"; // Import Dialog component
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
-import { Slot, User } from "./types";
-import { formatDateRange } from "./utils";
-import { useUser } from "./UserContext";
+import { Slot, User } from "../types";
+import { browserLocale, formatDateRange } from "../utils";
+import { useUser } from "../UserContext";
 
+/**
+ * Displays coaches with upcoming available slots
+ * Shows the average rating, total number of sessions completed,
+ * and soonest upcoming available slot for each coach
+ */
 function AvailableCoaches({
   onBookingCreated,
 }: {
@@ -229,6 +234,7 @@ function AvailableCoaches({
           </div>
         ) : (
           <ScheduleMeeting
+            locale={browserLocale}
             borderRadius={10}
             primaryColor="#2563eb"
             eventDurationInMinutes={120}
