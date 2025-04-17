@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['DBHOST'] %>
+  username: <%= ENV['DBUSER'] %>
+  password: <%= ENV['DBPASS'] %>
+
+development:
+  <<: *default
+  database: coaching-api_development
+
+test:
+  <<: *default
+  database: coaching-api_test
+
+production:
+  <<: *default
+  database: coaching-api_production
+  username: coaching-api
+  password: <%= ENV["coaching-api_DATABASE_PASSWORD"] %>

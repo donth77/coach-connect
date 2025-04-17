@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  coaching-db:
+    image: postgres
+    container_name: coaching-db
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - coaching-api-network
+
+  coaching-pgadmin:
+    image: dpage/pgadmin4
+    container_name: coaching-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "15432:80"
+    depends_on:
+      - coaching-db
+    networks:
+      - coaching-api-network
+
+  coaching-api:
+    image: coaching-api
+    container_name: coaching-api
+    build: .
+    environment:
+      - DBHOST=${API_DBHOST}
+      - DBUSER=${API_DBUSER}
+      - DBPASS=${API_DBPASS}
+    volumes:
+      - .:/coaching-api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - coaching-db
+    networks:
+      - coaching-api-network
+
+networks:
+  coaching-api-network:
+    driver: bridge
+
+volumes:
+  postgres:

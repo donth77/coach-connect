@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "primereact/resources/themes/lara-light-blue/theme.css"
+  layer(primereact);
+@import "primeicons/primeicons.css";
+
+@theme {
+  --color-azul: #2563eb;
+  --color-ghostWhite: #f9fafb;
+  --color-mysticShade: #4b5563;
+  --color-sunflower: #fbbf24;
+}
+
+body {
+  @apply bg-ghostWhite;
+}
