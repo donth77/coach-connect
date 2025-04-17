@@ -36,7 +36,11 @@ class UsersController < ApplicationController
         # Include stats only if the `stats` param is true
         if params[:stats] == "true"
           user_data[:sessions_completed] = user.role == "coach" ? user.slots.joins(:booking).where("slots.start_time < ?", Time.current).count : Booking.joins(:slot).where(student_id: user.id).where("slots.start_time < ?", Time.current).count
-          user_data[:average_rating] = user.role == "coach" ? user.slots.joins(:booking).average(:satisfaction_rating) : nil
+          user_data[:average_rating] = if user.role == "coach"
+                                          user.slots.joins(:booking).average(:satisfaction_rating).to_f || 0.0
+          else
+                                          nil
+          end
 
           # Add soonest available slot for coaches
           if user.role == "coach"

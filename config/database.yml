@@ -8,14 +8,12 @@ default: &default
 
 development:
   <<: *default
-  database: coaching-api_development
+  database: coaching-api-development
 
 test:
   <<: *default
-  database: coaching-api_test
+  database: coaching-api-test
 
 production:
   <<: *default
-  database: coaching-api_production
-  username: coaching-api
-  password: <%= ENV["coaching-api_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>

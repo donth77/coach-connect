@@ -12,6 +12,7 @@ import AvailableCoaches from "./AvailableCoaches";
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { selectedUser, setSelectedUser } = useUser();
   const isCoach = selectedUser?.role === Role.Coach;
 
@@ -27,8 +28,16 @@ function App() {
       const data: User[] = await response.json();
       setUsers(data);
 
+      data.forEach((user) => {
+        if (user.avatar_url) {
+          const img = new Image();
+          img.src = user.avatar_url;
+        }
+      }); // Preload avatar images
+
       if (data.length > 0) {
         setSelectedUser(data[0]); // Set the first user as selected by default
+        setAvatarUrl(data[0].avatar_url || null);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -43,12 +52,13 @@ function App() {
 
   const handleSelectUser = (user: User) => {
     setSelectedUser(user);
+    setAvatarUrl(user.avatar_url || null);
   };
 
   const selectedUserOptionTemplate = (option: User) => {
     return (
       <div className="flex items-center gap-4">
-        <Avatar image={option.avatar_url} shape="circle" />
+        <Avatar image={avatarUrl || undefined} shape="circle" />
         <div>{option.name}</div>
       </div>
     );
@@ -78,7 +88,7 @@ function App() {
             </span>
 
             <Dropdown
-              className="w-60"
+              className="w-60 min-w-fit"
               value={selectedUser}
               onChange={(e) => handleSelectUser(e.value)}
               options={users}

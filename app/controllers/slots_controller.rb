@@ -113,6 +113,7 @@ class SlotsController < ApplicationController
       slots = coach.slots
                    .includes(booking: :student)
                    .where("start_time >= ?", from_time)
+                   .order(start_time: :desc) # Sort by latest sessions first
       slots = slots.where("start_time <= ?", to_time) if to_time
 
       # Filter by booked status
@@ -157,6 +158,7 @@ class SlotsController < ApplicationController
       slots = Slot
         .includes(:booking, :coach)
         .where("slots.start_time >= ?", from_time)
+        .order(start_time: :desc) # Sort by latest sessions first
 
       slots = slots.where("slots.start_time <= ?", to_time) if to_time
 

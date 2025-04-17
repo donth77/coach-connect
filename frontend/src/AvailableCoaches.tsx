@@ -18,6 +18,9 @@ function AvailableCoaches({
 }) {
   const { selectedUser } = useUser();
   const [coaches, setCoaches] = useState<User[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const [isLoadingAvailableSlots, setLoadingAvailableSlots] =
+    useState<boolean>(true);
   const [showDialog, setShowDialog] = useState(false); // dialog visibility
   const [selectedCoach, setSelectedCoach] = useState<User | null>(null);
   const [selectedCoachSlots, setSelectedCoachSlots] = useState<Slot[]>([]);
@@ -33,10 +36,13 @@ function AvailableCoaches({
       setCoaches(data);
     } catch (error) {
       console.error("Error fetching coaches:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchCoachSlots = async (selectedCoachParam: User) => {
+    setLoadingAvailableSlots(true);
     try {
       const token = selectedUser?.token;
       const nowDateTimeIso = new Date().toISOString();
@@ -56,6 +62,8 @@ function AvailableCoaches({
       setSelectedCoachSlots(data);
     } catch (error) {
       console.error("Error fetching coaches:", error);
+    } finally {
+      setLoadingAvailableSlots(false);
     }
   };
 
@@ -123,61 +131,67 @@ function AvailableCoaches({
       <span className="flex w-fill justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-black">Available Coaches</h2>
       </span>
-      <div className="grid grid-cols-3 gap-4">
-        {coaches.map((coach) => (
-          <div
-            className="flex flex-col border border-gray-200 rounded-sm p-4"
-            key={coach.id}
-          >
-            <div className="flex">
-              <Avatar
-                className="mr-6"
-                size="xlarge"
-                image={coach.avatar_url}
-                shape="circle"
-                style={{ height: "64px", width: "64px" }}
-              />
-              <div
-                key={coach.id}
-                className="flex flex-col items-center justify-center"
-              >
-                <span className="text-xl font-bold text-black">
-                  {coach.name}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-60">
+          <ProgressSpinner />
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-4 max-h-135 overflow-y-auto">
+          {coaches.map((coach) => (
+            <div
+              className="flex flex-col border border-gray-200 rounded-sm p-4"
+              key={coach.id}
+            >
+              <div className="flex">
+                <Avatar
+                  className="mr-6"
+                  size="xlarge"
+                  image={coach.avatar_url}
+                  shape="circle"
+                  style={{ height: "64px", width: "64px" }}
+                />
+                <div
+                  key={coach.id}
+                  className="flex flex-col items-center justify-center"
+                >
+                  <span className="text-xl font-bold text-black">
+                    {coach.name}
+                  </span>
+                </div>
+              </div>
+              <div className="flex my-4">
+                <div className="flex items-center gap-2">
+                  <i className="pi pi-star-fill text-sunflower"></i>{" "}
+                  {coach.sessions_completed && (
+                    <div className="flex gap-2">
+                      <span className="font-bold text-black">
+                        {Number(coach.average_rating).toFixed(2)}
+                      </span>
+                      <span className="">
+                        ({coach.sessions_completed} sessions)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="mb-4">
+                <span>
+                  Available&nbsp;
+                  {formatDateRange(
+                    coach.soonest_available_slot?.start_time || "",
+                    coach.soonest_available_slot?.end_time || ""
+                  )}
                 </span>
               </div>
+              <Button
+                className=""
+                label="Book Session"
+                onClick={() => handleBookClick(coach)} // Show dialog on button click
+              />
             </div>
-            <div className="flex my-4">
-              <div className="flex items-center gap-2">
-                <i className="pi pi-star-fill text-sunflower"></i>{" "}
-                {coach.sessions_completed && (
-                  <div className="flex gap-2">
-                    <span className="font-bold text-black">
-                      {coach.average_rating}
-                    </span>
-                    <span className="">
-                      ({coach.sessions_completed} sessions)
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="mb-4">
-              <span>
-                Available&nbsp;
-                {formatDateRange(
-                  coach.soonest_available_slot?.start_time || "",
-                  coach.soonest_available_slot?.end_time || ""
-                ).toLocaleLowerCase()}
-              </span>
-            </div>
-            <Button
-              className=""
-              label="Book Session"
-              onClick={() => handleBookClick(coach)} // Show dialog on button click
-            />
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Dialog Component */}
       <Dialog
@@ -200,32 +214,34 @@ function AvailableCoaches({
           </div>
         }
       >
-        {/* <div className="flex items-center">
-          <ProgressSpinner />
-        </div> */}
+        {isLoadingAvailableSlots ? (
+          <div className="flex items-center h-125 mb-2">
+            <ProgressSpinner />
+          </div>
+        ) : (
+          <ScheduleMeeting
+            borderRadius={10}
+            primaryColor="#2563eb"
+            eventDurationInMinutes={120}
+            availableTimeslots={selectedCoachSlots.map((slot) => ({
+              id: slot.id,
+              startTime: new Date(slot.start_time),
+              endTime: new Date(slot.end_time),
+            }))}
+            onStartTimeSelect={(evt) => {
+              const availableTimeslot = evt.availableTimeslot;
+              const selectedSlot = selectedCoachSlots.find(
+                (slot) =>
+                  new Date(slot.start_time).getTime() ===
+                    new Date(availableTimeslot.startTime).getTime() &&
+                  new Date(slot.end_time).getTime() ===
+                    new Date(availableTimeslot.endTime).getTime()
+              );
 
-        <ScheduleMeeting
-          borderRadius={10}
-          primaryColor="#2563eb"
-          eventDurationInMinutes={120}
-          availableTimeslots={selectedCoachSlots.map((slot) => ({
-            id: slot.id,
-            startTime: new Date(slot.start_time),
-            endTime: new Date(slot.end_time),
-          }))}
-          onStartTimeSelect={(evt) => {
-            const availableTimeslot = evt.availableTimeslot;
-            const selectedSlot = selectedCoachSlots.find(
-              (slot) =>
-                new Date(slot.start_time).getTime() ===
-                  new Date(availableTimeslot.startTime).getTime() &&
-                new Date(slot.end_time).getTime() ===
-                  new Date(availableTimeslot.endTime).getTime()
-            );
-
-            setSelectedBookedCoachSlot(selectedSlot || null);
-          }}
-        />
+              setSelectedBookedCoachSlot(selectedSlot || null);
+            }}
+          />
+        )}
       </Dialog>
     </Card>
   );
