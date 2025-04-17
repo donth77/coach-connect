@@ -36,7 +36,9 @@ function CoachingCalendar() {
       const nowDateTimeIso = new Date().toISOString();
 
       const response = await fetch(
-        `/api/coach_slots?from_time=${earlyDateTimeIso}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/coach_slots?from_time=${earlyDateTimeIso}`,
         {
           method: "GET",
           headers: {
@@ -84,19 +86,22 @@ function CoachingCalendar() {
     try {
       const token = selectedUser.token;
 
-      const response = await fetch(`/api/slots`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          slot: {
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString(),
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/slots`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            slot: {
+              start_time: startTime.toISOString(),
+              end_time: endTime.toISOString(),
+            },
+          }),
+        }
+      );
 
       if (response.ok) {
         const responseData = await response.json();

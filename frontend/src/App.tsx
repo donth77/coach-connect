@@ -24,7 +24,9 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/users");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/users`
+      );
       const data: User[] = await response.json();
       setUsers(data);
 

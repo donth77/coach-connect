@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Locale,
-  format,
   getDay,
   getHours,
   getMinutes,
@@ -80,13 +79,16 @@ export default function EventGrid({
   const handleDeleteEvent = async () => {
     if (selectedEvent) {
       try {
-        const response = await fetch(`api/slots/${selectedEvent.id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${selectedUser?.token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/slots/${selectedEvent.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${selectedUser?.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (response.ok) {
           toast.success("Slot deleted!");

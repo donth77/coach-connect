@@ -30,7 +30,9 @@ function AvailableCoaches({
   const fetchCoaches = async () => {
     try {
       const response = await fetch(
-        "/api/users?role=coach&available=true&stats=true"
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/users?role=coach&available=true&stats=true`
       );
       const data = await response.json();
       setCoaches(data);
@@ -48,7 +50,11 @@ function AvailableCoaches({
       const nowDateTimeIso = new Date().toISOString();
 
       const response = await fetch(
-        `/api/coach_slots?from_time=${nowDateTimeIso}&booked=false&coach_id=${selectedCoachParam?.id}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/coach_slots?from_time=${nowDateTimeIso}&booked=false&coach_id=${
+          selectedCoachParam?.id
+        }`,
         {
           method: "GET",
           headers: {
@@ -90,18 +96,21 @@ function AvailableCoaches({
     const token = selectedUser?.token;
 
     try {
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          booking: {
-            slot_id: selectedBookedCoachSlot.id, // Use the selected slot ID
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/bookings`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            booking: {
+              slot_id: selectedBookedCoachSlot.id, // Use the selected slot ID
+            },
+          }),
+        }
+      );
 
       if (response.ok) {
         toast.success(

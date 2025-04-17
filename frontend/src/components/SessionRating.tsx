@@ -23,19 +23,22 @@ function SessionRating({
     setRatingValue(newRating); // optimistic update
 
     try {
-      const response = await fetch(`api/bookings/${slotBookingId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${selectedUser?.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          booking: {
-            satisfaction_rating: newRating,
-            notes: slotBookingNotes,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/bookings/${slotBookingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${selectedUser?.token}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            booking: {
+              satisfaction_rating: newRating,
+              notes: slotBookingNotes,
+            },
+          }),
+        }
+      );
 
       const json = await response.json();
       setRatingValue(json.satisfaction_rating);

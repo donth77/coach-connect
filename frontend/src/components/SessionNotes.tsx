@@ -20,19 +20,22 @@ function SessionNotes({
 
   const updateNotes = async (newNotes: string) => {
     try {
-      await fetch(`api/bookings/${slotBookingId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${selectedUser?.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          booking: {
-            satisfaction_rating: slotBookingRating,
-            notes: newNotes,
+      await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/bookings/${slotBookingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${selectedUser?.token}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            booking: {
+              satisfaction_rating: slotBookingRating,
+              notes: newNotes,
+            },
+          }),
+        }
+      );
     } catch (error) {
       console.error("Error updating notes:", error);
     }

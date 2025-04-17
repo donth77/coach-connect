@@ -18,7 +18,9 @@ function UpcomingSessions({ refresh }: { refresh: boolean }) {
       const token = selectedUser?.token;
 
       const endpoint = isCoach ? "coach_slots" : "student_slots";
-      const url = `/api/${endpoint}?from_time=${nowDateTimeIso}&booked=true`;
+      const url = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/${endpoint}?from_time=${nowDateTimeIso}&booked=true`;
 
       const response = await fetch(url, {
         method: "GET",

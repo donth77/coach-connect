@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_061511) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_064609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,14 +36,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_061511) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "phone_number", null: false
-    t.string "role", null: false
+    t.string "name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "role"
+    t.string "token"
+    t.string "avatar_url"
     t.string "preferred_timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "token"
-    t.string "avatar_url"
     t.index ["token"], name: "index_users_on_token", unique: true
     t.check_constraint "role::text = ANY (ARRAY['coach'::character varying, 'student'::character varying]::text[])", name: "users_role_check"
   end
